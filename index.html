@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/noty.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/themes/nest.css">
+    <title>Send Love</title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but nebulas doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app">
+      <div class="app-wrapper">	
+          <h1 class="logo">		
+              <span class="heart"></span>	
+              <span class="title"></span>
+          </h1>
+          <h4 class="subtitle subtitle-1">生成爱情宣言，让区块链见证永久</h4>
+          <h5 class="subtitle subtitle-2">每个账户只允许生成一条爱情宣言</h5>
+          <div class="message-box gradient-border">		
+            <div class="loading"></div>
+            <div class="message-input" contenteditable="true">输入您的爱情宣言...</div>
+            <div id="qrCode">
+              <p class="share-text">分享您生成的爱情宣言</p>
+            </div>
+            <div class="message-board">
+            </div>
+            <div class="box-wrapper" id="sendBtn">
+              <a class="button heart"></a>
+              <p class="btn-text">点击生成</p>
+            </div>
+      </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.slim.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/7.0.1/bignumber.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/urijs@1.19.1/src/URI.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/noty.min.js"></script>
+    <script>
+      window.IS_MAINNET = true
+    </script>
+    <script src="js/qrCode.min.js"></script>
+    <script src="js/nebPay.min.js"></script>
+    <script src="js/contractApi.js"></script>
+    <script src="js/dApp.js"></script>
+  </body>
+</html>
