@@ -10,6 +10,7 @@ body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
+  overflow: -moz-scrollbars-none;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -38,6 +39,14 @@ h5 {
 	font-size: 18px;
 	margin-top: 0;
 	margin-bottom: 30px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-black {
+  color: #000;
 }
 
 
@@ -127,6 +136,7 @@ body.has-msg {
   outline: 0;
   font-size: 30px;
   overflow-y: scroll;
+  overflow: -moz-scrollbars-none;
   color: rgba(255,255,255,0.8);
 }
 

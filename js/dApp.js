@@ -14,10 +14,11 @@
     if (typeof webExtensionWallet === 'undefined') {
       new Noty({
         type: 'error',
-        text: `<div>
+        text: `
+          <p class="text-center">
             请确保已安装 <a href="https://github.com/ChengOrangeJu/WebExtensionWallet">WebExtensionWallet</a>
-            ,否则将无法使用该 dAPP
-          </div>`
+          </p>
+          <p class="text-center">否则将无法使用该 dAPP</p>`
       }).show();
     }
 
@@ -28,7 +29,7 @@
       $('body').addClass('has-msg');
       $('.message-box').removeClass('gradient-border');
       $('.app-wrapper .title').text('Receive Love')
-      $('.subtitle.subtitle-1').html(`区块链已见证了来自 <strong>${queryObject.hash}</strong> 的爱情宣言`)
+      $('.subtitle.subtitle-1').html(`查询中...`)
       $('.subtitle.subtitle-2').text('')
       $('.message-input').hide()
 
@@ -36,12 +37,29 @@
       $('.loading').show()
       api.get(queryObject.hash, function(res) {
         if (!res.execute_err) {
+          $('.subtitle.subtitle-1').html(`区块链已见证了来自 <strong>${queryObject.hash}</strong> 的爱情宣言`)
           let data = JSON.parse(res.result)
           $('.message-board').html(`
           <p>发布时间: ${new Date(Number(data.time)).toLocaleString('CN')}</p>
           <p>${data.message}</p>
           `)
           $('.loading').hide()
+        } else {
+          $('.loading').hide()
+          $('.subtitle.subtitle-1').html(`查询失败！`)
+          $('.message-board').html(`
+            <p>查询失败！错误信息如下: </p>
+            <p>${res.execute_err}</p>
+            `)
+          new Noty({
+            type: 'error',
+            text: `
+              <p class="text-center">出现错误</p>
+              <p class="text-center">10 秒后页面将跳转至发布页</p>`
+          }).show();
+          setTimeout(function(){
+            location.href = 'https://mactaivsh.github.io/dApp-Love-declaration/'
+          }, 10000)
         }
       })
 
@@ -59,10 +77,11 @@
       if (typeof webExtensionWallet === 'undefined') {
         new Noty({
           type: 'error',
-          text: `<div>
+          text: `
+            <p class="text-center">
               系统检测到您暂未安装 <a href="https://github.com/ChengOrangeJu/WebExtensionWallet">WebExtensionWallet</a>
-              , 暂时无法使用该功能
-            </div>`
+            </p>
+            <p class="text-center">暂时无法使用该功能</p>`
         }).show();
 
         return;
@@ -83,7 +102,9 @@
 
         new Noty({
           type: 'info',
-          text: `区块链交易打包需要时间确认，请您耐心等待 10 - 15 秒`,
+          text: `
+            <p class="text-center">区块链交易打包需要时间确认</p>
+            <p class="text-center">请您耐心等待 10 - 15 秒</p>`,
           timeout: 3000
         }).show();
 
@@ -98,12 +119,14 @@
           // success
           console.log(resObject)
           let now = Date.now()
-          if (now - txStartTime >= 30000) {
+          if ((now - txStartTime) / 1000 >= 60) {
+            let url = `${location.href}?hash=${resObject.data.from}`
             new Noty({
               type: 'warning',
               text: `
-                <p>等待时间过长，请确保钱包内有足够余额，并设置合理的 gas fee</p>
-                <p class="tx-hash">交易tx: ${window.currentTxHash}</p>`
+                <p class="text-center">等待时间过长，请确保钱包内有足够余额，并设置合理的 gas fee</p>
+                <p class="tx-hash text-center">交易tx: <span class="text-black">${window.currentTxHash}</span></p>
+                <p class="result-link text-center">请自行查询确认交易状态成功后访问<a href="${url}">该链接</a>查看结果</p>`
             }).show();
             txStartTime = 0
             clearInterval(timer)
@@ -138,8 +161,8 @@
             new Noty({
               type: 'error',
               text: `
-                <p>区块链写入数据失败，请确保钱包内有足够余额！</p>
-                <p class="tx-hash">交易tx: ${window.currentTxHash}</p>`
+                <p class="text-center">区块链写入数据失败，请确保钱包内有足够余额！</p>
+                <p class="tx-hash text-center">交易tx: <span class="text-black">${window.currentTxHash}</span></p>`
             }).show();
             txStartTime = 0
             clearInterval(timer)
