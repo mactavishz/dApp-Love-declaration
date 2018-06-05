@@ -52,7 +52,7 @@
 
     }
 
-    let result_tx, timer, qrCode
+    let result_tx, timer, qrCode, txStartTime
 
     $('#sendBtn').on('click', function(e) {
       // check extension again
@@ -74,7 +74,8 @@
       // 获取当前时间
       let time = new Date().getTime().toString()
       result_tx = api.set(time, message, function(res) {
-        // console.log('txHash:', res)
+        txStartTime = Date.now()
+        console.log('txHash:', res)
         window.currentTxHash = res.txhash
         $('.message-input').hide()
         $('.loading').show()
@@ -95,9 +96,24 @@
         api.queryPayInfo(result_tx).then(res => {
           let resObject = JSON.parse(res)
           // success
-          // console.log(resObject)
+          console.log(resObject)
+          let now = Date.now()
+          if (now - txStartTime >= 30000) {
+            new Noty({
+              type: 'warning',
+              text: `
+                <p>等待时间过长，请确保钱包内有足够余额，并设置合理的 gas fee</p>
+                <p class="tx-hash">交易tx: ${window.currentTxHash}</p>`
+            }).show();
+            txStartTime = 0
+            clearInterval(timer)
+            $('.loading').hide()
+            $('#sendBtn').show()
+            $('.message-input').show()
+          }
           if (resObject.code === 0 && resObject.data.status === 1) {
             // clear timer
+            txStartTime = 0
             clearInterval(timer)
             let url = `${location.href}?hash=${resObject.data.from}`
             qrCode = new QRCode(document.getElementById('qrCode'), {
@@ -123,8 +139,9 @@
               type: 'error',
               text: `
                 <p>区块链写入数据失败，请确保钱包内有足够余额！</p>
-                <p>交易tx: ${window.currentTxHash}</p>`
+                <p class="tx-hash">交易tx: ${window.currentTxHash}</p>`
             }).show();
+            txStartTime = 0
             clearInterval(timer)
             $('.loading').hide()
             $('#sendBtn').show()
