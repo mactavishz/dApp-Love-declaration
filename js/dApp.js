@@ -83,7 +83,7 @@
 
       timer = setInterval(function() {
         checkTxStatus()
-      }, 5000)
+      }, 1000)
 
       function checkTxStatus() {
         api.queryPayInfo(result_tx).then(res => {
@@ -101,9 +101,23 @@
               colorLight : "#ffffff",
               correctLevel : QRCode.CorrectLevel.H
             })
+
+            new Noty({
+              type: 'success',
+              text: `区块链写入数据成功！`
+            }).show();
+
             $('.loading').hide()
             $('#qrCode').show()
             $('#qrCode').append(`<p class="result-link">扫描二维码或使用<a href="${url}">该链接</a></p>`)
+          } else if (resObject.code === 1) {
+            new Noty({
+              type: 'error',
+              text: `区块链写入数据失败，请确保钱包内有足够余额！`
+            }).show();
+            $('.loading').hide()
+            $('#sendBtn').show()
+            $('.message-input').show()
           }
         }).catch(err => {
           console.log(err)
