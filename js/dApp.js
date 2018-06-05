@@ -74,22 +74,29 @@
       // 获取当前时间
       let time = new Date().getTime().toString()
       result_tx = api.set(time, message, function(res) {
-        console.log('txHash:', res)
+        // console.log('txHash:', res)
+        window.currentTxHash = res.txhash
         $('.message-input').hide()
         $('.loading').show()
         $('#sendBtn').hide()
+
+        new Noty({
+          type: 'info',
+          text: `区块链交易打包需要时间确认，请您耐心等待 10 - 15 秒`,
+          timeout: 3000
+        }).show();
+
+        timer = setInterval(function() {
+          checkTxStatus()
+        }, 10000)
       })
-
-
-      timer = setInterval(function() {
-        checkTxStatus()
-      }, 1000)
 
       function checkTxStatus() {
         api.queryPayInfo(result_tx).then(res => {
           let resObject = JSON.parse(res)
           // success
-          if (resObject.code === 0) {
+          // console.log(resObject)
+          if (resObject.code === 0 && resObject.data.status === 1) {
             // clear timer
             clearInterval(timer)
             let url = `${location.href}?hash=${resObject.data.from}`
@@ -104,16 +111,19 @@
 
             new Noty({
               type: 'success',
-              text: `区块链写入数据成功！`
+              text: `区块链写入数据成功！`,
+              timeout: 3000
             }).show();
 
             $('.loading').hide()
             $('#qrCode').show()
             $('#qrCode').append(`<p class="result-link">扫描二维码或使用<a href="${url}">该链接</a></p>`)
-          } else if (resObject.code === 1) {
+          } else if (resObject.code === 1 || (resObject.code === 0 && resObject.data.status === 0)) {
             new Noty({
               type: 'error',
-              text: `区块链写入数据失败，请确保钱包内有足够余额！`
+              text: `
+                <p>区块链写入数据失败，请确保钱包内有足够余额！</p>
+                <p>交易tx: ${window.currentTxHash}</p>`
             }).show();
             clearInterval(timer)
             $('.loading').hide()
