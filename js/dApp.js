@@ -115,6 +115,7 @@
               type: 'error',
               text: `区块链写入数据失败，请确保钱包内有足够余额！`
             }).show();
+            clearInterval(timer)
             $('.loading').hide()
             $('#sendBtn').show()
             $('.message-input').show()
